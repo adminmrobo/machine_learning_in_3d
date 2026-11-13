@@ -1,6 +1,9 @@
 // 머신러닝 연구소 · 층별 실험(⑤)과 구역 ①③④의 내용
 // 층마다 DEMOS[약어] = { controls, init, change, click, step, read, say, view } 와 EXTRA[약어] = { say, io, part, curve } 를 둔다.
 // 숫자는 모두 이 파일 안에서 계산한다. view(s) 는 widgets3d.js 가 그릴 3D 물체 목록을 돌려준다(좌표는 ⑤ 구역 바닥판 기준, 가로 −6~6).
+import * as LO from './demos_lo.js';
+import * as MID from './demos_mid.js';
+import * as HI from './demos_hi.js';
 const C = { fg: 0xe9edf9, mu: 0x9aa7c7, a: 0x6fb1ff, b: 0xff9f6b, y: 0xffd76a, p: 0xff8fc7, g: 0x7fe0a8, r: 0xff6b5e };
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
@@ -100,3 +103,6 @@ export const EXTRA = {
       loops: [[4, 1, 'w와 b를 정함']], t: ['입력에 기울기를 곱하고 절편을 더하면 예측이 나옵니다.', '예측과 정답의 차이를 제곱해 모든 점에 대해 더합니다.', '그 합이 가장 작은 기울기와 절편을 고릅니다. 반복 없이 계산 한 번으로 구합니다.'], say: '부품은 곱하기 하나, 더하기 하나입니다. 나머지는 가장 좋은 w와 b를 고르는 계산입니다.' },
     curve: { f: lrCurve, lo: -1, hi: 2, v: -.2, xl: '기울기 w', yl: '평균 제곱 오차', title: '기울기를 바꾸면 오차는 그릇 모양', t: ['기울기가 알맞은 값에서 멀어질수록 오차가 제곱으로 커집니다.', '그릇의 바닥은 하나뿐입니다. 그래서 선형 회귀는 헤매지 않고 답을 바로 구합니다.'] } },
 };
+
+// 2~27층은 층 묶음별 파일에 있다: demos_lo.js(2~9) · demos_mid.js(10~18) · demos_hi.js(19~27). 계산 도구는 ml.js.
+[LO, MID, HI].forEach(M => { Object.assign(DEMOS, M.DEMOS); Object.assign(EXTRA, M.EXTRA); });

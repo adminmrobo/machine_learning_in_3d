@@ -196,7 +196,7 @@ let cx0 = CV.v;
 const hasPts = (() => { try { return demo.view(st).some(w => w.type === 'surface' && (w.pts || []).some(d => d.col == null)); } catch (e) { return false; } })();
 
 /* ---------- 오른쪽 설명 ---------- */
-const legend = '<div class="leg">' + (F.leg || []).map(t => '<span style="--c:' + CELLS[t][0] + '"><i></i>' + CELLS[t][1] + '</span>').join('') + '</div>';
+const legend = '<div class="leg">' + (F.leg || []).map(t => { const c = Array.isArray(t) ? [CELLS[t[0]][0], t[1]] : CELLS[t]; return '<span style="--c:' + c[0] + '"><i></i>' + c[1] + '</span>'; }).join('') + '</div>';
 let ctl = '';
 demo.controls.forEach(c => { if (c.b) return;
   if (c.opts) ctl += '<div class="row sel"><label for="c_' + c.k + '">' + c.l + '</label><select id="c_' + c.k + '" data-k="' + c.k + '">' + c.opts.map(o => '<option value="' + o[0] + '">' + o[1] + '</option>').join('') + '</select></div>';
@@ -375,7 +375,7 @@ function tickDemo(dt) { if (demo.step) demo.step(st, dt); uiT += dt; if (uiT < .
   /* ================= ② 아래층과 견주기 ================= */
   beginStation(); const S2 = { cx: 9, cz: -8 }; slab(2, S2.cx, S2.cz, 12, 11, COL.blue);
   label('② 아래층과 견주기', V(S2.cx, .5, S2.cz + 5.5), 'title', 2);
-  buildFig(fig(PREV.fig), G, V(S2.cx - 3.2, 3.5, S2.cz), .46, { dim: true });
+  buildFig(fig(F.cmpFig || PREV.fig), G, V(S2.cx - 3.2, 3.5, S2.cz), .46, { dim: true });
   buildFig(fig(F.fig), G, V(S2.cx + 2.9, 3.6, S2.cz), .56, { pulses: 5 });
   label(prevName, V(S2.cx - 3.2, 5.25, S2.cz), 'stage', 2).el.style.color = '#9aa7c7'; label(fnum ? fnum + '층 ' + F.ab : '머신러닝', V(S2.cx + 2.9, 5.65, S2.cz), 'stage', 2);
   arrow(V(S2.cx - .95, 3.5, S2.cz), V(S2.cx + .25, 3.5, S2.cz), .06, 0xffd76a);
@@ -410,7 +410,7 @@ function tickDemo(dt) { if (demo.step) demo.step(st, dt); uiT += dt; if (uiT < .
     const sy = S4.H / (hi - lo), base = S4.y0 - lo * sy; plate.sy = sy; plate.base = base;
     const pg = new T.PlaneGeometry(S4.PW * 2 + .6, S4.H + .7), pm = new T.Mesh(pg, new T.MeshStandardMaterial({ color: 0x0e1836, side: T.DoubleSide, roughness: .9 })); pm.position.set(S4.cx, S4.y0 + S4.H / 2, zp); G.add(pm);
     const pe = new T.LineSegments(new T.EdgesGeometry(pg), new T.LineBasicMaterial({ color: 0x7fe0a8 })); pe.position.copy(pm.position); G.add(pe);
-    const nice = r => { const p = Math.pow(10, Math.floor(Math.log10(r))), m = r / p; return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p; }, sn = v => { const a = Math.abs(v); if (a < 1e-9) return '0'; return (a >= 10 ? v.toFixed(0) : a >= 1 ? v.toFixed(1) : a >= .1 ? v.toFixed(2) : v.toFixed(3)).replace(/\.?0+$/, '').replace('-', '−'); };
+    const nice = r => { const p = Math.pow(10, Math.floor(Math.log10(r))), m = r / p; return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p; }, sn = v => { const a = Math.abs(v); if (a < 1e-9) return '0'; const t = a >= 10 ? v.toFixed(0) : a >= 1 ? v.toFixed(1) : a >= .1 ? v.toFixed(2) : v.toFixed(3); return (t.includes('.') ? t.replace(/\.?0+$/, '') : t).replace('-', '−'); };
     const gl = [], sx = nice((CV.hi - CV.lo) / 6), sv = nice((hi - lo) / 4);
     for (let t = Math.ceil(CV.lo / sx - 1e-9) * sx; t <= CV.hi + 1e-9; t += sx) { gl.push(V(X(t), S4.y0, zp + .01), V(X(t), S4.y0 + S4.H, zp + .01)); label(sn(t), V(X(t), S4.y0 - .32, zp), 'note', 4); }
     for (let t = Math.ceil(lo / sv - 1e-9) * sv; t <= hi + 1e-9; t += sv) { const y = base + t * sy; gl.push(V(S4.cx - S4.PW, y, zp + .01), V(S4.cx + S4.PW, y, zp + .01)); label(sn(t), V(S4.cx - S4.PW - .4, y, zp), 'note', 4, 'r'); }
