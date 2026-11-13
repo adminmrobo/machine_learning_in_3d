@@ -96,6 +96,7 @@ select{width:100%;background:var(--panel2);border:1px solid var(--line);border-r
 .eqbox .eqs{padding:0 14px 10px}
 .eqbox code{display:block;font-family:"Noto Sans KR",sans-serif;font-size:14.5px;font-weight:500;color:var(--text);margin:2px 0;white-space:normal}
 .eqbox p{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+.eqbox dl.terms{margin:0;padding:0 14px 10px;font-size:13px}.eqbox dt{font-weight:700;color:var(--text);margin-top:7px}.eqbox dd{margin:2px 0 0;color:var(--muted);line-height:1.55}.eqbox code.py{display:inline;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#9fd3ff;white-space:normal;word-break:break-word}
 .why{font-size:13.5px;background:var(--panel2);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;margin:6px 0 4px}
 .quiz{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 8px}
 .quiz b{display:block;font-size:14px;margin-bottom:6px}
@@ -208,6 +209,8 @@ $('#panel').innerHTML =
     '<div class="grp">' + FL + ' · ' + band(fnum) + (fnum ? ' · ' + GP.n : '') + '</div><h2>' + TT + '</h2><p class="en">' + F.en + '</p>' + (F.task ? '<span class="chip">하는 일: ' + F.task + '</span>' : '') + (F.yr ? '<span class="chip">' + F.yr + (typeof F.yr === 'number' ? '년' : '') + '</span>' : '') +
     three(F.three) + talk(F.talk) +
     '<details class="eqbox" open><summary>핵심 식 (접기·펼치기)</summary><div class="eqs">' + F.eq.map(q => '<code>' + q + '</code>').join('') + '<p>' + F.eqNote + '</p></div></details>' +
+    (F.terms ? '<details class="eqbox"><summary>용어 풀이 (' + F.terms.length + '개)</summary><dl class="terms">' + F.terms.map(t => '<dt>' + t[0] + '</dt><dd>' + t[1] + '</dd>').join('') + '</dl></details>' : '') +
+    (F.use ? '<details class="eqbox"><summary>실무 메모 · 언제 쓰고 무엇을 조심하나</summary><dl class="terms"><dt>언제 쓰나</dt><dd>' + F.use[0] + '</dd><dt>조심할 점</dt><dd>' + F.use[1] + '</dd><dt>파이썬에서</dt><dd><code class="py">' + F.use[2] + '</code></dd></dl></details>' : '') +
     '<h3>오늘 안내하는 연구실 식구</h3><div class="crew">' +
       [['haru', 'E01', '① 하는 일'], ['doctor', 'E13', '② 견주기'], ['jupanbot', 'E13', '③ 핵심 부품'], ['fruitfly', 'E13', '④ 그래프 판'], ['sia', 'E13', '⑤ 실험'], ['moa', 'E01', '⑤ 실험']].map(c => '<div><img src="../assets/' + c[0] + '_' + c[1] + '.webp" alt=""><span><b>' + NAME[c[0]] + '</b>' + c[2] + '</span></div>').join('') + '</div>' +
     '<h3>구역 고르기</h3><div class="cards">' +
@@ -224,6 +227,7 @@ $('#panel').innerHTML =
       (fnum ? '<a class="btn" href="?f=0#lab">훈련용·시험용 나누기와 과적합 (로비 ⑤)</a>' : '') +
       '<a class="btn" href="' + LINKS.FISH + '02_loss_and_gradient.html">손실 함수와 경사하강법 (Fish Market 연구실 2장)</a>' +
       '<a class="btn" href="' + LINKS.FISH + '03_rate_batch_epoch.html">학습률·배치·에포크 (Fish Market 연구실 3장)</a>' +
+      (fnum === 27 ? '<a class="btn" href="' + LINKS.NNLAB + 'floors/?f=1">다음 건물로: 신경망 연구소 1층 퍼셉트론</a>' : '') +
       '<a class="btn" href="' + LINKS.NNLAB + '">옆 건물: 신경망 연구소 (신경망 27종)</a></div>' +
     '<h3>참고 문헌</h3><ol class="refs">' + F.refs.map(r => '<li>' + r + '</li>').join('') + '</ol>' +
     '<div class="foot"><p>글 · 안상선 ((주)M-Robo 대표)</p><p>27종의 구성과 모델 그림은 머신러닝 모델 도감을 따릅니다. 그림과 실험의 점은 설명을 위해 만든 가상의 데이터입니다.</p><p>화면의 수치는 이 페이지 안에서 계산한 교육용 예시입니다.</p><p>캐릭터 이름·설정 © 안상선</p></div>' +

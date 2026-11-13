@@ -63,7 +63,7 @@ DEMOS.GBM = {
   read(s) { return [['훈련 오차', f2(s.h.tr, 3)], ['시험 오차', f2(s.h.te, 3)]]; },
   say(s) { const H = s.B.H, best = H.reduce((b, h, i) => h.te < H[b].te ? i : b, 0) + 1;
     if (s.n === 1) return '첫 나무 하나는 계단 몇 칸뿐입니다. 분홍 선(남은 오차)이 깁니다. 다음 나무는 <b>원래 점이 아니라 이 분홍 선</b>을 맞히도록 배웁니다. 나무 수를 올려 보십시오.';
-    if (s.n > best + 15 && s.h.te > H[best - 1].te * 1.08) return '훈련 오차는 ' + f2(s.h.tr, 3) + '까지 내려갔지만 시험 오차는 나무 ' + best + '그루 때가 가장 낮았습니다. 나무가 잡음까지 따라가기 시작했습니다. 실제로는 시험 오차가 오르기 시작하면 <b>일찍 멈춥니다.</b>';
+    if (s.n > best + 15 && s.h.te > H[best - 1].te * 1.08) return '훈련 오차는 ' + f2(s.h.tr, 3) + '까지 내려갔지만 시험 오차는 나무 ' + best + '그루 때가 가장 낮았습니다. 나무가 잡음까지 따라가기 시작했습니다. 실제로는 따로 떼어 둔 <b>검증용 데이터</b>의 오차가 오르기 시작하면 일찍 멈춥니다(조기 종료).';
     return '나무 ' + s.n + '그루가 차례로 오차를 조금씩 메웠습니다. 학습률 ' + s.lr + '은 나무 하나의 말을 <b>' + Math.round(s.lr * 100) + '%만</b> 듣는다는 뜻입니다. 작게 하면 느리지만 차분하게 다가갑니다.'; },
   view(s) { const host = 'sia', h = s.h, prev = s.n > 1 ? s.B.H[s.n - 2].F : GB.tr.map(() => 0), t = s.B.T[s.n - 1];
     const L = []; for (let i = 0; i < 120; i++) L.push([GB.XS[i], h.fx[i], GB.XS[i + 1], h.fx[i + 1], C.b, .05]);

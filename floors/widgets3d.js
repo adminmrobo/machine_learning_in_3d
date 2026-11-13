@@ -137,6 +137,7 @@ export function makeWidgets(T, ctx) {
           const m = strips[si] || (strips[si] = mkStrip()); si++; m.visible = true; m.material.color.set(q.c);
           const pos = m.geometry.attributes.position.array, wd = (q.w || .08) / 2, zz = .05 + qi * .015, N = Math.max(2, q.len || v.length), P = [];
           for (let i = 0; i < Math.min(v.length, CAP + 1); i++) P.push([X(i / (N - 1)), Y(v[i])]);
+          if (P.length === 1) P.push([P[0][0] + Wd / (N - 1) * .35, P[0][1]]);   // 값이 하나뿐이어도 짧은 선으로 보이게
           for (let k = 0; k < P.length - 1; k++) { const a = P[k], b = P[k + 1]; let dx = b[0] - a[0], dy = b[1] - a[1]; const l = Math.hypot(dx, dy) || 1; dx /= l; dy /= l;
             const nx = -dy * wd, ny = dx * wd, o = k * 12;
             if (q.dash && Math.floor(k / 3) % 2 === 1) { for (let j = 0; j < 4; j++) { pos[o + j * 3] = a[0]; pos[o + j * 3 + 1] = a[1]; pos[o + j * 3 + 2] = zz; } continue; }

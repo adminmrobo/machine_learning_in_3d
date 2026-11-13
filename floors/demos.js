@@ -106,3 +106,5 @@ export const EXTRA = {
 
 // 2~27층은 층 묶음별 파일에 있다: demos_lo.js(2~9) · demos_mid.js(10~18) · demos_hi.js(19~27). 계산 도구는 ml.js.
 [LO, MID, HI].forEach(M => { Object.assign(DEMOS, M.DEMOS); Object.assign(EXTRA, M.EXTRA); });
+// 시험용 점수로 설정을 고르는 것처럼 보이는 그래프에는, 실제로는 검증용으로 고른다는 말을 덧붙인다
+['로비', 'kNN', 'DT', 'Ridge', 'Kernel SVM', 'GBM', 'XGB', 'LGBM', 'RF', 'ET', 'AdaBoost', 'MLP'].forEach(ab => EXTRA[ab].curve.t.push('이 그래프는 보여 주려고 시험용 점수로 그렸습니다. 실제로 설정을 고를 때는 검증용 데이터나 교차 검증을 쓰고, 시험용은 맨 마지막에 한 번만 씁니다.'));
