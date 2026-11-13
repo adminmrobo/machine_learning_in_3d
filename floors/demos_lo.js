@@ -1,19 +1,19 @@
 // 머신러닝 연구소 · 저층부(2~9층) 실험과 구역 ①③④
 // 형식은 demos.js 맨 위 설명과 같다. 점은 모두 설명을 위해 만든 가상의 데이터다.
-import { C, clamp, rng, gauss, f2, pct, mean, sgn, memo, sig, d2, lsq, clipLine, SURF, SIDE, gridFn, pts, curve, blobs2, treeData, split, acc, wave, tree, tpred, leaves, tsegs } from './ml.js';
+import { C, clamp, rng, gauss, f2, pct, mean, sgn, memo, sig, d2, lsq, clipLine, SURF, SIDE, gridFn, pts, curve, blobs2, treeData, split, acc, wave, tree, tpred, leaves, tsegs, bigTest } from './ml.js';
 
 const K = { i: '#ffd76a', o: '#ff9f6b', bx: '#6fb1ff', gt: '#b79cff', g: '#7fe0a8', p: '#ff8fc7' };
 const PAL = [C.y, C.a, C.v, C.g, C.p, C.b];
 export const DEMOS = {}, EXTRA = {};
 
 /* ================= 2층 k-최근접 이웃 (시아) ================= */
-const KN = (() => { const D = blobs2(36, 30, .42, .3, .22), sp = split(D, 2, 24);
+const KN = (() => { const D = blobs2(36, 30, .42, .3, .22), sp = { tr: split(D, 2, 24).tr, te: bigTest.blobs(1036, .42, .3, .22) };
   const prob = (tr, k) => (x, y) => { const ds = tr.map(d => [(d.x - x) ** 2 + (d.y - y) ** 2, d.c]).sort((a, b) => a[0] - b[0]); let s = 0; for (let i = 0; i < k; i++) s += ds[i][1]; return s / k; };
   return { ...sp, prob }; })();
 const knnAcc = memo(k => acc(KN.te, KN.prob(KN.tr, k)));
 DEMOS.kNN = {
   vt: '새 점 주변 k개의 다수결',
-  note: '노랑·파랑 점 36개로 배우고, 보이지 않는 점 24개로 채점합니다. 모두 설명을 위해 만든 가상의 데이터입니다. 바닥의 높낮이는 그 자리에 새 점이 오면 노랑으로 답할 비율입니다.',
+  note: '노랑·파랑 점 36개로 배우고, 같은 방식으로 따로 뽑은 보이지 않는 점 400개로 채점합니다. 모두 설명을 위해 만든 가상의 데이터입니다. 바닥의 높낮이는 그 자리에 새 점이 오면 노랑으로 답할 비율입니다.',
   controls: [{ k: 'k', l: '이웃 수 k', min: 1, max: 15, step: 2, v: 3 }, { k: 'qx', l: '새 점 가로', min: -1, max: 1, step: .01, v: .08 }, { k: 'qy', l: '새 점 세로', min: -1, max: 1, step: .01, v: .02 }],
   init(s) { this.change(s, 'k'); },
   change(s, k) { if (k === 'k') { s.fn = gridFn(KN.prob(KN.tr, s.k)); s.acc = knnAcc(s.k); }
@@ -64,12 +64,12 @@ EXTRA.LogR = { say: '점의 위치를 넣으면 0과 1 사이 숫자, "노랑일
   curve: { f: z => sig(z), lo: -6, hi: 6, v: 0, xl: '점수 z', yl: '노랑일 확률', title: 'S자 곡선 σ(z) = 1 / (1 + e⁻ᶻ)', t: ['z가 0이면 확률 0.5, 경계 위입니다.', 'z가 커질수록 1에, 작아질수록 0에 다가가지만 끝내 닿지는 않습니다.'] } };
 
 /* ================= 4층 결정 트리 (시아) ================= */
-const DTD = (() => { const D = treeData(12, 110, .1); return split(D, 4, 36); })();
+const DTD = (() => { const D = treeData(12, 110, .1); return { tr: split(D, 4, 36).tr, te: bigTest.tree(1012, .1) }; })();
 const dtFit = memo(dp => tree(DTD.tr, { depth: dp, minLeaf: 1 }));
 const dtAcc = memo(dp => acc(DTD.te, (x, y) => tpred(dtFit(dp), x, y)));
 DEMOS.DT = {
   vt: '질문을 몇 번까지 던질까 (나무의 깊이)',
-  note: '점 110개 중 74개로 배우고 36개로 채점합니다. 설명을 위해 만든 가상의 데이터이고, 일부러 잡음(색이 뒤바뀐 점)을 섞었습니다. 바닥의 네모 칸 높이가 그 칸의 노랑 비율입니다.',
+  note: '점 74개로 배우고, 같은 방식으로 따로 뽑은 점 400개로 채점합니다. 설명을 위해 만든 가상의 데이터이고, 일부러 잡음(색이 뒤바뀐 점)을 섞었습니다. 바닥의 네모 칸 높이가 그 칸의 노랑 비율입니다.',
   controls: [{ k: 'dp', l: '나무의 깊이', min: 1, max: 9, step: 1, v: 2 }],
   init(s) { this.change(s); },
   change(s) { s.T = dtFit(s.dp); s.fn = gridFn((x, y) => tpred(s.T, x, y)); s.tra = acc(DTD.tr, (x, y) => tpred(s.T, x, y)); s.tea = dtAcc(s.dp); },

@@ -1,6 +1,6 @@
 // 머신러닝 연구소 · 중층부(10~18층) 실험과 구역 ①③④
 // 형식은 demos.js 맨 위 설명과 같다. 점은 모두 설명을 위해 만든 가상의 데이터다.
-import { C, clamp, rng, gauss, f2, pct, mean, memo, sig, d2, clipLine, SURF, SIDE, LAY, gridFn, pts, blobs2, treeData, moons, split, acc, tree, tpred, leaves, tsegs, bootstrap } from './ml.js';
+import { C, clamp, rng, gauss, f2, pct, mean, memo, sig, d2, clipLine, SURF, SIDE, LAY, gridFn, pts, blobs2, treeData, moons, split, acc, tree, tpred, leaves, tsegs, bootstrap, bigTest } from './ml.js';
 
 const K = { i: '#ffd76a', o: '#ff9f6b', bx: '#6fb1ff', gt: '#b79cff', g: '#7fe0a8', p: '#ff8fc7' };
 const PAL = [C.y, C.a, C.v, C.g, C.p, C.b, C.r, 0x8fe3d0];
@@ -110,7 +110,7 @@ EXTRA.SVM = { say: '점의 위치를 넣으면, 경계의 어느 쪽인지(노�
   curve: { f: d => 2 * SV.at(d).m, lo: 0, hi: 359, v: 70, xl: '경계에 수직인 방향 (도)', yl: '길 폭 (음수 = 겹침)', title: '방향마다 낼 수 있는 길 폭', t: ['0보다 위인 방향에서만 두 무리를 깨끗이 가를 수 있습니다.', '가장 높은 봉우리가 SVM이 고르는 경계입니다.'] } };
 
 /* ================= 13·14층 랜덤 포레스트 · 엑스트라 트리 ================= */
-const FD = (() => { const D = treeData(23, 110, .12); return split(D, 9, 36); })();
+const FD = (() => { const D = treeData(23, 110, .12); return { tr: split(D, 9, 36).tr, te: bigTest.tree(1023, .12) }; })();
 const grow = memo(key => { const [mode, seed] = key.split(':'), r = rng(+seed * 131 + (mode === 'et' ? 7 : 0)), cnt = { n: 0 };
   const T = Array.from({ length: 40 }, () => tree(mode === 'et' ? FD.tr : bootstrap(FD.tr, r), { depth: 7, minLeaf: 2, feats: 1, rand: mode === 'et', r, cnt }));
   const G = T.map(t => gridFn((x, y) => tpred(t, x, y), 1.2, 40)); return { T, G, per: cnt.n / 40 }; });
@@ -119,7 +119,7 @@ const forestAcc = (F, n, D) => mean(D.map(d => { let s = 0; for (let i = 0; i < 
 const rfCurve = memo(n => forestAcc(grow('rf:1'), n, FD.te)), etCurve = memo(n => forestAcc(grow('et:1'), n, FD.te));
 DEMOS.RF = {
   vt: '나무를 늘릴수록 경계가 차분해진다',
-  note: '점 110개 중 74개로 배우고 36개로 채점합니다. 설명을 위해 만든 가상의 데이터이고, 잡음을 섞었습니다. 나무마다 훈련 점을 중복 허용으로 다시 뽑고, 질문마다 변수 하나만 무작위로 봅니다. 초록 선은 가장 최근에 심은 나무 한 그루의 경계입니다.',
+  note: '점 74개로 배우고, 같은 방식으로 따로 뽑은 점 400개로 채점합니다. 설명을 위해 만든 가상의 데이터이고, 잡음을 섞었습니다. 나무마다 훈련 점을 중복 허용으로 다시 뽑고, 질문마다 변수 하나만 무작위로 봅니다. 초록 선은 가장 최근에 심은 나무 한 그루의 경계입니다.',
   controls: [{ k: 'n', l: '나무 수', min: 1, max: 40, step: 1, v: 1 }, { b: 'new', l: '숲 다시 심기' }],
   init(s) { s.seed = 1; this.change(s); },
   change(s) { s.F = grow('rf:' + s.seed); s.fn = gridFn(forestP(s.F, s.n), 1.2, 40); s.one = forestAcc(s.F, 1, FD.te); s.te = forestAcc(s.F, s.n, FD.te); },
@@ -137,7 +137,7 @@ EXTRA.RF = { say: '점의 위치를 넣으면, 나무 수백 그루가 투표한
   curve: { f: rfCurve, lo: 1, hi: 40, step: 1, v: 1, xl: '나무 수', yl: '시험 정확도', title: '나무 수와 시험 정확도', t: ['처음 몇 그루에서 빠르게 오르고, 그 뒤로는 거의 평평합니다.', '나무를 더 심어도 과적합이 심해지지 않습니다. 대신 계산이 늘어납니다.'] } };
 DEMOS.ET = {
   vt: '기준값까지 무작위로 고르면 어떻게 될까',
-  note: '13층과 같은 점 110개(훈련 74, 시험 36)입니다. 엑스트라 트리는 다시 뽑기 없이 원래 데이터를 쓰고, 기준값을 따져 보지 않고 무작위로 하나 고릅니다.',
+  note: '13층과 같은 점(훈련 74개, 따로 뽑은 시험 400개)입니다. 엑스트라 트리는 다시 뽑기 없이 원래 데이터를 쓰고, 기준값을 따져 보지 않고 무작위로 하나 고릅니다.',
   controls: [{ k: 'n', l: '나무 수', min: 1, max: 40, step: 1, v: 10 }, { k: 'mode', l: '기준값 고르는 법', opts: [['et', '무작위 (엑스트라 트리)'], ['rf', '가장 좋은 값 (랜덤 포레스트)']], v: 'et' }],
   init(s) { this.change(s); },
   change(s) { s.F = grow(s.mode + ':1'); s.fn = gridFn(forestP(s.F, s.n), 1.2, 40); s.te = forestAcc(s.F, s.n, FD.te); },
@@ -186,7 +186,7 @@ EXTRA.DBSCAN = { say: '정답 없는 점들을 넣으면, 덩어리 번호와 "�
   curve: { f: dbK, lo: .04, hi: .44, step: .02, v: .2, xl: '반경 ε (최소 이웃 4)', yl: '덩어리 수', title: '반경에 따라 바뀌는 덩어리 수', t: ['반경이 작으면 덩어리가 잘게 쪼개지거나 아예 없습니다.', '반경이 크면 덩어리가 하나로 이어집니다. 가운데 평평한 구간이 믿을 만한 답입니다.'] } };
 
 /* ================= 16층 에이다부스트 (시아) ================= */
-const AB = (() => { const D = treeData(21, 90, .05), sp = split(D, 6, 30), tr = sp.tr, n = tr.length; let w = new Array(n).fill(1 / n); const R = [];
+const AB = (() => { const D = treeData(21, 90, .05), sp = { tr: split(D, 6, 30).tr, te: bigTest.tree(1021, .05) }, tr = sp.tr, n = tr.length; let w = new Array(n).fill(1 / n); const R = [];
   for (let m = 0; m < 30; m++) { const W = w.slice(), T = tree(tr.map((d, i) => ({ ...d, i })), { depth: 1, w: d => W[d.i] }), h = (x, y) => tpred(T, x, y) > .5 ? 1 : -1;
     let e = 0; tr.forEach((d, i) => { if (h(d.x, d.y) !== (d.c ? 1 : -1)) e += W[i]; }); e = clamp(e, 1e-6, .499); const a = .5 * Math.log((1 - e) / e);
     w = W.map((v, i) => v * Math.exp(-a * (tr[i].c ? 1 : -1) * h(tr[i].x, tr[i].y))); const z = w.reduce((s, v) => s + v, 0); w = w.map(v => v / z); R.push({ T, h, a, e, W, w: w.slice() }); }
@@ -196,7 +196,7 @@ const AB = (() => { const D = treeData(21, 90, .05), sp = split(D, 6, 30), tr = 
 const abTe = memo(m => AB.accm(m, AB.te)), abTr = memo(m => AB.accm(m, AB.tr));
 DEMOS.AdaBoost = {
   vt: '틀린 점에 무게를 실어 다음 나무에 넘기기',
-  note: '점 90개 중 60개로 배우고 30개로 채점합니다. 설명을 위해 만든 가상의 데이터입니다. 나무는 질문 하나짜리(그루터기)입니다. 점의 크기가 다음 나무가 보는 무게, 초록 선이 방금 세운 그루터기입니다.',
+  note: '점 60개로 배우고, 같은 방식으로 따로 뽑은 점 400개로 채점합니다. 설명을 위해 만든 가상의 데이터입니다. 나무는 질문 하나짜리(그루터기)입니다. 점의 크기가 다음 나무가 보는 무게, 초록 선이 방금 세운 그루터기입니다.',
   controls: [{ k: 'm', l: '나무 수', min: 1, max: 30, step: 1, v: 1 }],
   init(s) { this.change(s); },
   change(s) { s.fn = gridFn((x, y) => sig(2 * AB.F(s.m)(x, y)), 1.2, 40); },

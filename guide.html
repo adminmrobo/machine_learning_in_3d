@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>머신러닝 연구소 — 강사용 수업 안내</title>
+<meta name="description" content="머신러닝 연구소 27층을 8차시 수업으로 묶은 강사용 안내">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0f1e;--panel:#111a30;--panel2:#18233f;--line:#27345a;--text:#e9edf9;--muted:#9aa7c7;--acc:#6fb1ff;--y:#ffd76a;--g:#7fe0a8;--p:#ff8fc7}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:15.5px;line-height:1.7;-webkit-font-smoothing:antialiased}
+main{max-width:980px;margin:0 auto;padding:32px 22px 60px}
+a{color:var(--acc)}
+h1{font-size:28px;margin:4px 0 6px;letter-spacing:-.01em}
+h2{font-size:20px;margin:38px 0 10px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:18px 0 6px;color:var(--y)}
+.kick{color:var(--acc);font-weight:700;font-size:13px;margin:0}
+.lead{color:var(--muted);max-width:760px}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:500;background:var(--panel)}
+.s{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:16px 0}
+.s .hd{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.s .no{font-weight:700;color:var(--bg);background:var(--acc);border-radius:8px;padding:1px 9px;font-size:13px}
+.s h3{margin:0;color:var(--text);font-size:18px}
+.s .fl{color:var(--muted);font-size:13.5px}
+.s ol,.s ul{margin:6px 0 0;padding-left:20px}
+.s li{margin:3px 0}
+.tag{display:inline-block;font-size:12.5px;border:1px solid var(--line);border-radius:999px;padding:0 9px;margin:2px 4px 2px 0;color:var(--muted)}
+.lab{color:var(--g);font-weight:700}
+.q{color:var(--p);font-weight:700}
+.foot{color:var(--muted);font-size:13px;margin-top:40px;border-top:1px solid var(--line);padding-top:12px}
+code{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--panel2);border-radius:5px;padding:1px 5px}
+@media (max-width:640px){main{padding:22px 14px 40px}h1{font-size:23px}table{font-size:13px}}
+</style>
+</head>
+<body>
+<main>
+<p class="kick">머신러닝 연구소 · 강사용</p>
+<h1>27층을 8차시 수업으로</h1>
+<p class="lead">건물은 쉬운 것부터 층을 쌓았지만, 수업은 "닮은 모델끼리" 묶어야 비교가 쉽습니다. 아래는 한 차시 75분을 기준으로 묶은 동선입니다. 각 차시는 <b>도입(로비나 앞 차시와 잇기) → 층 둘러보기 → 실험 과제 → 확인 문제</b> 순서로 진행합니다. 실험 과제는 모두 페이지에 실제로 있는 조절 장치만 씁니다.</p>
+
+<h2>수업 전에</h2>
+<table>
+<tr><th>할 일</th><th>방법</th></tr>
+<tr><td>화면 띄우기</td><td>층 주소 끝에 <code>&amp;present=1</code>을 붙이면 설명 칸 없이 3D만 크게 열립니다. 예: <code>floors/?f=4&amp;present=1</code>. ←/→ 키로 구역을 넘기고 Esc로 나갑니다.</td></tr>
+<tr><td>특정 구역으로 바로</td><td>주소 끝에 <code>#lab</code>(⑤ 실험), <code>#graph</code>(④ 그래프 판), <code>#compare</code>(② 견주기), <code>#part</code>(③ 부품), <code>#blueprint</code>(위층 그림)를 붙입니다.</td></tr>
+<tr><td>학생 준비물</td><td>노트북이나 태블릿 브라우저(WebGL 지원). 설치는 필요 없습니다. 3D가 뜨지 않아도 오른쪽 설명과 실험의 숫자 칸은 그대로 쓸 수 있습니다.</td></tr>
+<tr><td>미리 알려 줄 것</td><td>실험의 점은 모두 설명을 위해 만든 가상의 데이터입니다. ④ 그래프 판은 보여 주려고 시험용 점수로 그렸고, 실제로 설정을 고를 때는 검증용 데이터를 쓴다는 점을 로비에서 한 번 짚어 주십시오.</td></tr>
+</table>
+
+<h2>차시 한눈에</h2>
+<table>
+<tr><th>차시</th><th>묶음</th><th>층</th><th>핵심 질문</th></tr>
+<tr><td>1</td><td>출발점</td><td>로비 · 1 · 3</td><td>데이터에서 선을 긋는다는 것은 무엇이고, 어떻게 채점하나?</td></tr>
+<tr><td>2</td><td>거리 · 확률 · 판별</td><td>2 · 6 · 11</td><td>"가깝다"와 "그럴 법하다"로 가르는 법은 어떻게 다른가?</td></tr>
+<tr><td>3</td><td>나무와 숲</td><td>4 · 13 · 14</td><td>나무 한 그루의 흔들림을 숲은 어떻게 잡나?</td></tr>
+<tr><td>4</td><td>부스팅</td><td>16 · 20 · 21 · 22 · 23</td><td>앞 모델의 실수를 다음 모델에 넘기면 무엇이 좋아지나?</td></tr>
+<tr><td>5</td><td>규제와 마진</td><td>7 · 8 · 12 · 19</td><td>모델을 일부러 덜 자유롭게 만드는 이유는?</td></tr>
+<tr><td>6</td><td>군집</td><td>5 · 10 · 15 · 18</td><td>정답 없이 묶을 때 "좋은 묶음"은 누가 정하나?</td></tr>
+<tr><td>7</td><td>차원 축소와 이상 탐지</td><td>9 · 25 · 26 · 17</td><td>변수를 줄이거나 별난 점을 찾을 때 무엇을 잃고 무엇을 얻나?</td></tr>
+<tr><td>8</td><td>불확실성과 신경망으로</td><td>24 · 27</td><td>"모른다"고 말하는 모델과, 직선을 엮어 곡선을 만드는 모델</td></tr>
+</table>
+
+<div class="s"><div class="hd"><span class="no">1차시</span><h3>출발점: 나누고, 긋고, 확률로 말하기</h3><span class="fl"><a href="floors/?f=0">로비</a> · <a href="floors/?f=1">1층 선형 회귀</a> · <a href="floors/?f=3">3층 로지스틱 회귀</a></span></div>
+<ul>
+<li><span class="lab">실험 ①</span> 로비 ⑤: 복잡도(차수)를 1 → 9로 올리며 훈련 오차와 시험 오차 막대를 읽게 합니다. <b>훈련용·시험용 다시 나누기</b>를 눌러 가장 좋은 차수가 나눔마다 달라지는 것도 봅니다.</li>
+<li><span class="lab">실험 ②</span> 1층 ⑤: 기울기·절편을 손으로 맞춰 본 뒤 <b>가장 좋은 선 찾기</b>를 누릅니다. 이어서 <b>멀리 튄 점</b>을 넣어 선이 끌려가는 것을 봅니다.</li>
+<li><span class="lab">실험 ③</span> 3층 ⑤: 가파름을 12로 올리면 로그 손실이 어떻게 되는지 예측하게 한 뒤 확인합니다.</li>
+<li><span class="q">토론</span> 왜 오차를 제곱할까? 제곱하면 튄 점에 어떤 일이 생기나?</li>
+</ul></div>
+
+<div class="s"><div class="hd"><span class="no">2차시</span><h3>거리 · 확률 · 판별</h3><span class="fl"><a href="floors/?f=2">2층 k-최근접 이웃</a> · <a href="floors/?f=6">6층 나이브 베이즈</a> · <a href="floors/?f=11">11층 선형 판별 분석</a></span></div>
+<ul>
+<li><span class="lab">실험 ①</span> 2층 ⑤: k = 1과 k = 15에서 바닥 모양과 시험 정확도를 비교합니다. 새 점을 경계 근처로 옮겨 투표가 바뀌는 순간을 찾게 합니다.</li>
+<li><span class="lab">실험 ②</span> 6층 ⑤: 새 점을 (0, 0)에 두고 사전 확률만 0.1 → 0.9로 바꿉니다. 같은 점의 답이 뒤집히는 사전 확률을 찾게 합니다.</li>
+<li><span class="lab">실험 ③</span> 11층 ⑤: 비추는 방향을 손으로 돌려 J가 가장 큰 곳을 찾은 뒤, <b>가장 잘 갈리는 방향 찾기</b>로 확인합니다. 말풍선이 알려 주는 "두 중심을 잇는 방향"과 비교합니다.</li>
+<li><span class="q">토론</span> 세 모델 중 "미리 배우는 것"이 없는 모델은? 그래서 생기는 장단점은?</li>
+</ul></div>
+
+<div class="s"><div class="hd"><span class="no">3차시</span><h3>나무와 숲</h3><span class="fl"><a href="floors/?f=4">4층 결정 트리</a> · <a href="floors/?f=13">13층 랜덤 포레스트</a> · <a href="floors/?f=14">14층 엑스트라 트리</a></span></div>
+<ul>
+<li><span class="lab">실험 ①</span> 4층 ⑤: 깊이를 1부터 하나씩 올리며 훈련·시험 정확도를 표에 적게 합니다. 시험 정확도가 꺾이는 깊이를 찾습니다.</li>
+<li><span class="lab">실험 ②</span> 13층 ⑤: 나무 1그루에서 <b>숲 다시 심기</b>를 몇 번 눌러 초록 경계가 얼마나 흔들리는지 봅니다. 그다음 나무 수를 40으로 올립니다.</li>
+<li><span class="lab">실험 ③</span> 14층 ⑤: 기준값 고르는 법을 바꿔 가며 바닥 계단의 모양과 "따져 본 기준값" 칸을 비교합니다.</li>
+<li><span class="q">토론</span> 나무끼리 서로 비슷하면 투표가 왜 소용없을까?</li>
+</ul></div>
+
+<div class="s"><div class="hd"><span class="no">4차시</span><h3>부스팅: 실수를 넘겨받는 나무들</h3><span class="fl"><a href="floors/?f=16">16층 에이다부스트</a> · <a href="floors/?f=20">20층 그래디언트 부스팅</a> · <a href="floors/?f=21">21층 XGBoost</a> · <a href="floors/?f=22">22층 LightGBM</a> · <a href="floors/?f=23">23층 CatBoost</a></span></div>
+<ul>
+<li><span class="lab">실험 ①</span> 16층 ⑤: 나무 수를 1 → 2 → 3으로 올리며 커지는 점이 어디인지 말하게 합니다.</li>
+<li><span class="lab">실험 ②</span> 20층 ⑤: 학습률 1.0과 0.1에서 나무 수를 같이 올리며 오차 그래프를 비교합니다.</li>
+<li><span class="lab">실험 ③</span> 21층 ⑤: λ와 γ를 올려 잎 수와 시험 오차가 어떻게 바뀌는지 봅니다(회색 선 = 벌점 없을 때).</li>
+<li><span class="lab">실험 ④</span> 23층 ⑤: 가게 수를 80으로 두고 "숫자로 바꾸는 법"을 바꿔 훈련·시험 정확도의 틈을 봅니다.</li>
+<li><span class="q">토론</span> 23층의 "타깃 누수"가 실제 업무에서 생길 만한 예를 하나씩 들어 보게 합니다.</li>
+</ul>
+<p class="fl">층이 많은 차시입니다. 22층은 ④ 그래프 판만, 21층은 ② 견주기만 보는 식으로 줄여도 됩니다.</p></div>
+
+<div class="s"><div class="hd"><span class="no">5차시</span><h3>규제와 마진</h3><span class="fl"><a href="floors/?f=7">7층 릿지</a> · <a href="floors/?f=8">8층 라쏘</a> · <a href="floors/?f=12">12층 SVM</a> · <a href="floors/?f=19">19층 커널 SVM</a></span></div>
+<ul>
+<li><span class="lab">실험 ①</span> 7층 ⑤: 벌점 λ를 10^−7에서 10^1까지 올리며 빨강 막대(크기 3 넘는 계수)가 사라지는 지점을 찾습니다.</li>
+<li><span class="lab">실험 ②</span> 8층 ⑤: λ를 올리며 계수가 0이 되는 순서를 적게 합니다. 실제로 쓴 변수 w1~w3이 마지막까지 남는지 확인합니다.</li>
+<li><span class="lab">실험 ③</span> 12층 ⑤ → 19층 ⑤: 12층에서 가장 넓은 길을 찾은 뒤, 19층에서 커널을 선형 → 다항 → RBF로 바꿉니다. RBF에서 γ를 40까지 올립니다.</li>
+<li><span class="q">토론</span> 릿지·라쏘의 벌점과 SVM의 넓은 길은 "덜 자유롭게"라는 점에서 어떻게 닮았나?</li>
+</ul></div>
+
+<div class="s"><div class="hd"><span class="no">6차시</span><h3>군집: 정답 없이 묶기</h3><span class="fl"><a href="floors/?f=5">5층 k-평균</a> · <a href="floors/?f=10">10층 계층적 군집</a> · <a href="floors/?f=15">15층 DBSCAN</a> · <a href="floors/?f=18">18층 가우시안 혼합</a></span></div>
+<ul>
+<li><span class="lab">실험 ①</span> 5층 ⑤: <b>한 바퀴</b>를 한 번씩 누르며 중심이 옮겨 가는 것을 봅니다. <b>중심 다시 놓기</b>로 엉뚱한 곳에 멈추는 경우를 찾게 합니다.</li>
+<li><span class="lab">실험 ②</span> 10층 ⑤: 묶음 수를 3으로 두고 "묶음 사이 거리"를 세 가지로 바꿔 나무 그림의 모양을 비교합니다.</li>
+<li><span class="lab">실험 ③</span> 15층 ⑤: 반경 ε를 0.1 → 0.2 → 0.4로 올리며 덩어리 수와 잡음 수를 적게 합니다.</li>
+<li><span class="lab">실험 ④</span> 18층 ⑤: <b>한 걸음</b>을 눌러 가며 타원이 자리 잡는 것과 로그 우도 그래프를 봅니다.</li>
+<li><span class="q">토론</span> 네 모델에서 사람이 정해 줘야 하는 값은 각각 무엇인가? (k, 자르는 높이, ε와 최소 이웃 수, 종 모양 수)</li>
+</ul></div>
+
+<div class="s"><div class="hd"><span class="no">7차시</span><h3>차원 축소와 이상 탐지</h3><span class="fl"><a href="floors/?f=9">9층 주성분 분석</a> · <a href="floors/?f=25">25층 t-SNE</a> · <a href="floors/?f=26">26층 UMAP</a> · <a href="floors/?f=17">17층 아이솔레이션 포레스트</a></span></div>
+<ul>
+<li><span class="lab">실험 ①</span> 9층 ⑤: 축을 직접 돌려 "담긴 퍼짐"이 가장 큰 방향을 찾은 뒤 <b>가장 넓은 방향 찾기</b>로 맞춰 봅니다.</li>
+<li><span class="lab">실험 ②</span> 25층 ⑤: 퍼플렉서티 3과 25에서 각각 <b>돌리기</b>를 눌러 지도 모양을 비교합니다. 무리 사이 거리를 해석하면 안 되는 이유를 말하게 합니다.</li>
+<li><span class="lab">실험 ③</span> 26층 ⑤: 같은 데이터에서 이웃 수 3과 15로 돌려 "이웃 유지 비율"을 비교합니다.</li>
+<li><span class="lab">실험 ④</span> 17층 ⑤: 기준 점수를 올리고 내리며 별난 점 5개를 모두 찾으면서 보통 점은 걸리지 않는 값을 찾게 합니다.</li>
+<li><span class="q">토론</span> 9층과 25층의 지도는 각각 무엇을 지키고 무엇을 버렸나?</li>
+</ul></div>
+
+<div class="s"><div class="hd"><span class="no">8차시</span><h3>불확실성, 그리고 신경망으로</h3><span class="fl"><a href="floors/?f=24">24층 가우시안 프로세스</a> · <a href="floors/?f=27">27층 다층 퍼셉트론</a> · <a href="https://adminmrobo.github.io/ai_in_3d/floors/?f=1">신경망 연구소 1층</a></span></div>
+<ul>
+<li><span class="lab">실험 ①</span> 24층 ⑤: <b>점 하나 더</b>를 눌러 가며 띠가 좁아지는 곳을 봅니다. 길이 척도 ℓ을 0.05와 0.9로 바꿔 극단을 봅니다.</li>
+<li><span class="lab">실험 ②</span> 27층 ⑤: 은닉 뉴런 1개로 학습한 결과와 4개로 학습한 결과를 비교합니다. 1개일 때가 3층 로지스틱 회귀와 같다는 것을 확인합니다.</li>
+<li><span class="q">마무리</span> 27층 전체 보기의 "다음 건물로" 버튼으로 신경망 연구소 1층에 넘어가 다음 학기(또는 다음 단원)를 예고합니다.</li>
+</ul></div>
+
+<h2>평가에 쓰기</h2>
+<table>
+<tr><th>자료</th><th>쓰는 법</th></tr>
+<tr><td>층마다 확인 문제 2개</td><td>차시 끝 3분 퀴즈로 씁니다. 답을 누르면 풀이가 바로 나옵니다.</td></tr>
+<tr><td>실험 기록표</td><td>위 실험 과제에서 "적게 합니다"라고 한 곳(깊이별 정확도, 계수가 0이 되는 순서, ε별 덩어리 수 등)을 표로 내게 하면 과제가 됩니다. 페이지의 숫자는 매번 같은 값이 나오므로 채점하기 쉽습니다.</td></tr>
+<tr><td>실무 메모</td><td>층마다 "언제 쓰나 · 조심할 점 · 파이썬 이름"이 있습니다. 실습 수업에서 그 이름으로 실제 데이터에 돌려 보는 과제로 이어 갈 수 있습니다.</td></tr>
+</table>
+
+<p class="foot">글 · 안상선 ((주)M-Robo 대표) · <a href="./">머신러닝 연구소 건물로 돌아가기</a> · 실험의 점은 모두 설명을 위해 만든 가상의 데이터입니다.</p>
+</main>
+</body>
+</html>

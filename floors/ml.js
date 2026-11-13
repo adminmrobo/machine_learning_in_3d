@@ -42,11 +42,11 @@ export const curve = (f, c = C.b, w = .05, lo = -1.15, hi = 1.15, n = 60, R = 1.
 /* ---------- 가상의 데이터 (x, y는 −1.1~1.1, c는 0 또는 1) ---------- */
 const keep = (r, n, gen, ok, gap = .07) => { const o = []; let g = 0; while (o.length < n && g++ < 20000) { const p = gen(r); if (Math.abs(p.x) > 1.08 || Math.abs(p.y) > 1.08) continue; if (ok && !ok(p)) continue; if (o.some(q => Math.hypot(q.x - p.x, q.y - p.y) < gap)) continue; o.push(p); } return o; };
 // 두 무리: 오른쪽 위가 노랑(1), 왼쪽 아래가 파랑(0). sp = 퍼짐
-export function blobs2(seed, n = 24, sp = .3, dx = .45, dy = .3) { const r = rng(seed);
-  return [...keep(r, n, r => ({ x: -dx + gauss(r) * sp, y: -dy + gauss(r) * sp, c: 0 })), ...keep(r, n, r => ({ x: dx + gauss(r) * sp, y: dy + gauss(r) * sp, c: 1 }))]; }
+export function blobs2(seed, n = 24, sp = .3, dx = .45, dy = .3, gap = .07) { const r = rng(seed);
+  return [...keep(r, n, r => ({ x: -dx + gauss(r) * sp, y: -dy + gauss(r) * sp, c: 0 }), null, gap), ...keep(r, n, r => ({ x: dx + gauss(r) * sp, y: dy + gauss(r) * sp, c: 1 }), null, gap)]; }
 // 나무용: 노랑은 왼쪽 아래 칸, 파랑은 오른쪽 전체와 왼쪽 위 (직선 하나로는 못 가름)
-export function treeData(seed, n = 70, noise = .06) { const r = rng(seed);
-  return keep(r, n, r => { const x = r() * 2.1 - 1.05, y = r() * 2.1 - 1.05; let c = x < -.05 && y < .1 ? 1 : 0; if (r() < noise) c = 1 - c; return { x, y, c }; }, null, .1); }
+export function treeData(seed, n = 70, noise = .06, gap = .1) { const r = rng(seed);
+  return keep(r, n, r => { const x = r() * 2.1 - 1.05, y = r() * 2.1 - 1.05; let c = x < -.05 && y < .1 ? 1 : 0; if (r() < noise) c = 1 - c; return { x, y, c }; }, null, gap); }
 export function moons(seed, n = 30, nz = .1) { const r = rng(seed), o = [];
   for (let i = 0; i < n; i++) { const a = Math.PI * i / (n - 1); o.push({ x: -.35 + .6 * Math.cos(a) + gauss(r) * nz, y: -.12 + .6 * Math.sin(a) + gauss(r) * nz, c: 0 }); o.push({ x: .35 - .6 * Math.cos(a) + gauss(r) * nz, y: .12 - .6 * Math.sin(a) + gauss(r) * nz, c: 1 }); }
   return o.map(p => ({ ...p, x: clamp(p.x, -1.1, 1.1), y: clamp(p.y, -1.1, 1.1) })); }
@@ -57,6 +57,8 @@ export function circles(seed, n = 30, nz = .08) { const r = rng(seed), o = [];
 // 훈련용·시험용 나누기 (같은 씨앗이면 같은 나눔)
 export function split(D, seed, nt) { const q = rng(seed * 7919 + 3), idx = D.map((_, i) => i); for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(q() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
   const te = new Set(idx.slice(0, nt)); return { tr: D.filter((_, i) => !te.has(i)), te: D.filter((_, i) => te.has(i)) }; }
+// 채점용: 훈련 데이터와 같은 방식으로 따로 뽑은 큰 시험용 데이터 (화면에는 그리지 않는다)
+export const bigTest = { blobs: (s, ...a) => blobs2(s, 200, ...a, 0), tree: (s, nz) => treeData(s, 400, nz, 0) };
 export const acc = (D, p) => mean(D.map(d => ((p(d.x, d.y) > .5 ? 1 : 0) === d.c ? 1 : 0)));
 // 1차원 회귀용 점: 물결 곡선 + 잡음
 export function wave(seed, n = 30, nz = .14) { const r = rng(seed); return Array.from({ length: n }, (_, i) => { const x = -1.05 + 2.1 * (i + .2 + r() * .6) / n; return { x, y: clamp(.62 * Math.sin(2.8 * x + .3) + gauss(r) * nz, -1.1, 1.1) }; }); }

@@ -1,13 +1,13 @@
 // 머신러닝 연구소 · 고층부(19~27층) 실험과 구역 ①③④
 // 형식은 demos.js 맨 위 설명과 같다. 점은 모두 설명을 위해 만든 가상의 데이터다.
-import { C, clamp, rng, gauss, f2, pct, mean, memo, sig, solve, SURF, SIDE, LAY, gridFn, pts, curve, treeData, moons, circles, split, acc, wave, tree, tpred, leaves, tsegs } from './ml.js';
+import { C, clamp, rng, gauss, f2, pct, mean, memo, sig, solve, SURF, SIDE, LAY, gridFn, pts, curve, treeData, moons, circles, split, acc, wave, tree, tpred, leaves, tsegs, bigTest } from './ml.js';
 
 const K = { i: '#ffd76a', o: '#ff9f6b', bx: '#6fb1ff', gt: '#b79cff', g: '#7fe0a8', p: '#ff8fc7' };
 const PAL = [C.y, C.a, C.v, C.g, C.p];
 export const DEMOS = {}, EXTRA = {};
 
 /* ================= 19층 커널 SVM (모아) ================= */
-const KS = (() => { const D = circles(14, 32, .18), sp = split(D, 3, 24);
+const KS = (() => { const D = circles(14, 32, .18), sp = { tr: split(D, 3, 24).tr, te: circles(1014, 200, .18) };
   const ker = (kind, g) => kind === 'lin' ? (a, b) => a.x * b.x + a.y * b.y : kind === 'poly' ? (a, b) => (a.x * b.x + a.y * b.y + 1) ** 2 : (a, b) => Math.exp(-g * ((a.x - b.x) ** 2 + (a.y - b.y) ** 2));
   const fit = memo(key => { const [kind, g] = key.split(':'), kf = ker(kind, +g), X = sp.tr, n = X.length, y = X.map(d => d.c ? 1 : -1), Km = X.map(a => X.map(b => kf(a, b))), Cc = 5, r = rng(9);
     const al = new Array(n).fill(0); let b = 0, passes = 0, loops = 0; const f = i => { let s = b; for (let k = 0; k < n; k++) if (al[k]) s += al[k] * y[k] * Km[k][i]; return s; };
@@ -27,7 +27,7 @@ const KS = (() => { const D = circles(14, 32, .18), sp = split(D, 3, 24);
 const ksKey = s => s.kind + ':' + (s.kind === 'rbf' ? s.g : 0);
 DEMOS['Kernel SVM'] = {
   vt: '평평한 칼로는 못 자르는 무리를 커널로 가르기',
-  note: '안쪽 노랑, 바깥 파랑 고리 모양의 가상 데이터입니다. 40개로 배우고 24개로 채점합니다. 바닥의 높이는 모델의 점수(경계로부터의 거리)를 0~1로 눌러 담은 것이고, 경계는 그 언덕의 허리(0.5)입니다.',
+  note: '안쪽 노랑, 바깥 파랑 고리 모양의 가상 데이터입니다. 40개로 배우고, 같은 방식으로 따로 뽑은 400개로 채점합니다. 바닥의 높이는 모델의 점수(경계로부터의 거리)를 0~1로 눌러 담은 것이고, 경계는 그 언덕의 허리(0.5)입니다.',
   controls: [{ k: 'kind', l: '커널', opts: [['lin', '선형 (커널 없음)'], ['poly', '다항 (2차)'], ['rbf', 'RBF (가우스)']], v: 'lin' }, { k: 'g', l: 'RBF 폭 γ', min: 1, max: 40, step: 1, v: 6 }],
   init(s) { this.change(s); },
   change(s) { s.M = KS.fit(ksKey(s)); s.fn = gridFn((x, y) => sig(1.6 * s.M.dec(x, y)), 1.2, 40); },
@@ -43,7 +43,7 @@ DEMOS['Kernel SVM'] = {
 EXTRA['Kernel SVM'] = { say: 'SVM처럼 점을 넣으면 어느 쪽인지가 나와요. 그런데 경계가 휠 수 있어요!', io: ['점의 위치 (변수 여러 개)', '경계의 어느 쪽인가'],
   part: { items: [['ball', K.i, '입력 x'], ['box', K.gt, '커널 K(x, 서포트 벡터)'], ['box', K.bx, '닮음 점수 × α 더하기'], ['gate', K.g, '부호로 가르기'], ['ball', K.o, '답']],
     t: ['새 점과 서포트 벡터 사이의 "닮음"을 커널 함수로 잽니다.', '닮음에 서포트 벡터마다의 무게 α와 색(±1)을 곱해 더합니다.', '점을 정말 높은 차원으로 옮기지 않고도, 옮긴 것과 같은 계산이 됩니다(커널 트릭).'], say: '12층 SVM에서 "점끼리 곱하기" 칸 하나를 커널로 바꿨습니다. 나머지 부품은 그대로입니다.' },
-  curve: { f: g => KS.fit('rbf:' + g).te, lo: 1, hi: 40, step: 3, v: 6, xl: 'RBF 폭 γ', yl: '시험 정확도', title: 'γ와 시험 정확도', t: ['γ가 작으면 언덕이 넓고 완만해서 경계가 거의 직선입니다.', 'γ가 크면 점마다 뾰족한 언덕이 솟아 과적합합니다. 가운데가 알맞습니다.'] } };
+  curve: { f: g => KS.fit('rbf:' + g).te, lo: 1, hi: 40, step: 3, v: 6, xl: 'RBF 폭 γ', yl: '시험 정확도', title: 'γ와 시험 정확도', t: ['γ가 작으면 언덕이 넓고 완만해서 경계가 거의 직선입니다.', 'γ가 크면 점마다 뾰족한 언덕이 솟아 훈련 점만 외웁니다. 이 데이터에서는 γ가 작을 때 가장 좋고, 커질수록 시험 정확도가 조금씩 내려갑니다.'] } };
 
 /* ================= 20·21층 그래디언트 부스팅 · XGBoost (1차원 회귀) ================= */
 const GB = (() => { const tr = wave(9, 30, .15), te = wave(109, 60, .15), XS = Array.from({ length: 121 }, (_, i) => -1.15 + 2.3 * i / 120);
@@ -97,7 +97,7 @@ EXTRA.XGB = { say: '그래디언트 부스팅과 똑같이 숫자를 넣으면 �
   curve: { f: l => GB.boost('0.30:30:4:' + l + ':0').H[29].te, lo: 0, hi: 20, step: 1, v: 0, xl: '잎 값 벌점 λ', yl: '시험 오차', title: 'λ와 시험 오차 (γ = 0)', t: ['λ를 조금 주면 깊은 나무의 지나친 잎 값이 눌려 시험 오차가 줄어듭니다.', '너무 크면 나무가 아무 말도 못 해서 다시 나빠집니다.'] } };
 
 /* ================= 22층 LightGBM (시아) ================= */
-const LG = (() => { const D = treeData(22, 110, .08), sp = split(D, 5, 36);
+const LG = (() => { const D = treeData(22, 110, .08), sp = { tr: split(D, 5, 36).tr, te: bigTest.tree(1022, .08) };
   const gini = P => { if (!P.length) return 0; const p = mean(P.map(d => d.c)); return P.length * 2 * p * (1 - p); };
   const best = (P, cand) => { let b = null, nc = 0; for (const f of ['x', 'y']) { const vs = cand(P, f); nc += vs.length; for (const t of vs) { const L = P.filter(d => d[f] < t), R = P.filter(d => d[f] >= t); if (L.length < 2 || R.length < 2) continue; const g = gini(P) - gini(L) - gini(R); if (!b || g > b.g) b = { f, t, g, L, R }; } } return { b, nc }; };
   const bins = nb => (P, f) => Array.from({ length: nb - 1 }, (_, k) => -1.1 + (k + 1) * 2.2 / nb);
@@ -110,7 +110,7 @@ const LG = (() => { const D = treeData(22, 110, .08), sp = split(D, 5, 36);
   return { ...sp, grow }; })();
 DEMOS.LGBM = {
   vt: '값을 구간으로 묶고, 이득이 가장 큰 잎부터 키우기',
-  note: '점 110개 중 74개로 배우고 36개로 채점합니다. 설명을 위해 만든 가상의 데이터입니다. 옅은 격자가 구간(빈)의 경계이고, 나무는 이 격자선 위에서만 자를 수 있습니다. 실제 LightGBM은 이런 나무 수백 그루로 부스팅합니다. 여기서는 나무 한 그루가 자라는 방식만 봅니다.',
+  note: '점 74개로 배우고, 같은 방식으로 따로 뽑은 점 400개로 채점합니다. 설명을 위해 만든 가상의 데이터입니다. 옅은 격자가 구간(빈)의 경계이고, 나무는 이 격자선 위에서만 자를 수 있습니다. 실제 LightGBM은 이런 나무 수백 그루로 부스팅합니다. 여기서는 나무 한 그루가 자라는 방식만 봅니다.',
   controls: [{ k: 'nl', l: '잎 수', min: 2, max: 16, step: 1, v: 4 }, { k: 'nb', l: '구간 수', min: 2, max: 32, step: 1, v: 8 }],
   init(s) { this.change(s); },
   change(s) { s.G = LG.grow(s.nl + ':' + s.nb); s.fn = gridFn((x, y) => tpred(s.G.root, x, y), 1.2, 40); },
@@ -269,7 +269,7 @@ EXTRA.UMAP = { say: 't-SNE처럼 2차원 지도가 나와요. 더 빠르고, 새
   curve: { f: k => UM.full(k + ':0.1'), lo: 2, hi: 20, step: 2, v: 8, xl: '이웃 수 k', yl: '이웃 유지 비율', title: '이웃 수에 따른 이웃 유지 비율', t: ['k가 아주 작으면 그물이 끊어져 무리가 조각나고, 이웃 유지 비율이 낮습니다.', 'k를 키우면 무리 전체가 하나로 엮여 비율이 오릅니다. 이 데이터는 무리마다 점이 20개라 k가 20에 가까우면 무리 전체가 서로 이웃입니다.'] } };
 
 /* ================= 27층 다층 퍼셉트론 (모아) ================= */
-const MP = (() => { const D = moons(27, 34, .12), sp = split(D, 4, 24);
+const MP = (() => { const D = moons(27, 34, .12), sp = { tr: split(D, 4, 24).tr, te: moons(1027, 200, .12) };
   const make = (H, seed) => { const r = rng(seed * 31 + H); return { H, W1: Array.from({ length: H }, () => [gauss(r) * 1.2, gauss(r) * 1.2]), b1: Array.from({ length: H }, () => gauss(r) * .5), W2: Array.from({ length: H }, () => gauss(r) * .5), b2: 0, ep: 0, V: null, loss: [] }; };
   const fwd = (N, x, y) => { const h = N.W1.map((w, k) => Math.tanh(w[0] * x + w[1] * y + N.b1[k])); return [sig(h.reduce((s, v, k) => s + v * N.W2[k], N.b2)), h]; };
   const train = (N, E, lr) => { const T = sp.tr, n = T.length; if (!N.V) N.V = { W1: N.W1.map(() => [0, 0]), b1: N.b1.map(() => 0), W2: N.W2.map(() => 0), b2: 0 };
@@ -284,7 +284,7 @@ const MP = (() => { const D = moons(27, 34, .12), sp = split(D, 4, 24);
   return { ...sp, make, train, P, final }; })();
 DEMOS.MLP = {
   vt: '은닉 뉴런이 직선 여러 개를 엮어 곡선 경계를 만든다',
-  note: '초승달 두 개가 맞물린 가상의 데이터 68개 중 44개로 배우고 24개로 채점합니다. 바닥의 높이가 "노랑일 확률", 오른쪽은 이 신경망의 모양입니다. 선 굵기가 연결의 세기, 파랑은 +, 하늘은 − 입니다.',
+  note: '초승달 두 개가 맞물린 가상의 데이터 44개로 배우고, 같은 방식으로 따로 뽑은 400개로 채점합니다. 바닥의 높이가 "노랑일 확률", 오른쪽은 이 신경망의 모양입니다. 선 굵기가 연결의 세기, 파랑은 +, 하늘은 − 입니다.',
   controls: [{ k: 'H', l: '은닉 뉴런 수', min: 1, max: 12, step: 1, v: 4 }, { k: 'lr', l: '학습률', min: .05, max: 1.5, step: .05, v: .5 }, { b: 'run', l: '학습 시작 / 멈춤' }, { b: 'reset', l: '처음부터' }],
   init(s) { s.seed = 1; this.change(s, 'H'); },
   change(s, k) { if (k === 'lr') return; s.N = MP.make(s.H, s.seed); s.auto = 0; this.fresh(s); },

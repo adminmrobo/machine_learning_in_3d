@@ -4,6 +4,7 @@
 [머신러닝 모델 도감](https://adminmrobo.github.io/machine_learning_model_atlas/)의 내용을, [신경망 연구소](https://adminmrobo.github.io/ai_in_3d/)(저장소 `ai_in_3d`)와 같은 건물 틀로 옮겼습니다.
 
 - 사이트: https://adminmrobo.github.io/machine_learning_in_3d/
+- 강사용 수업 안내(8차시): https://adminmrobo.github.io/machine_learning_in_3d/guide.html
 - 글 · 안상선 ((주)M-Robo 대표)
 
 ## 지금 열린 곳
@@ -58,6 +59,7 @@
 ```
 .
 ├─ index.html          머신러닝 연구소 건물 (첫 화면: 건물 전체, 엘리베이터로 층 고르기)
+├─ guide.html          강사용 수업 안내 (27층을 8차시로 묶은 동선·실험 과제·토론거리)
 ├─ floors/
 │  ├─ index.html       층 페이지 하나 (주소 끝의 ?f=0 로비, ?f=1 ~ ?f=27 층)
 │  ├─ data.js          층 순서·이름·설명·대사(MORE)·식·문헌·문제(INFO). OPEN = 지금 열린 가장 높은 층
@@ -76,7 +78,7 @@
 - `chars3d/lab3d.js`의 원본은 [fruitfly-lab-expressions](https://github.com/adminmrobo/fruitfly-lab-expressions)입니다. 원본을 고치면 이 사본도 바꿉니다.
 - 층 하나를 고치려면: 그림은 `figs.js`, 설명·대사는 `data.js`의 `MORE`, 식·문헌·문제는 `INFO`, 실험은 그 층이 든 `demos_*.js`를 고칩니다.
 - 모든 모델은 바깥 라이브러리 없이 페이지 안에서 직접 계산합니다. UMAP은 원 논문의 핵심(이웃 그물, 당기기·밀기)만 줄인 교육용 구현입니다.
-- 실험의 숫자는 모두 페이지 안에서 계산합니다. 점은 설명을 위해 만든 가상의 데이터입니다.
+- 실험의 숫자는 모두 페이지 안에서 계산합니다. 점은 설명을 위해 만든 가상의 데이터입니다. 분류 실험의 정확도는 훈련 데이터와 같은 방식으로 따로 뽑은 시험용 점 400개(화면에는 그리지 않음)로 채점합니다.
 - 3D를 불러오지 못하면 안내문이 나오고, 오른쪽 설명과 실험의 숫자 칸은 그대로 쓸 수 있습니다. (신경망 연구소에 있던 평면 실험 화면은 이 저장소에는 없습니다.)
 
 ## 저작권
